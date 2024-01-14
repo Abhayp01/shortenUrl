@@ -1,34 +1,36 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
+function GenerateResult({ inpvalue }) {
+  const [shortenUrl, setShorten] = useState("The Shortened Link will be displayed here");
 
-function GenerateResut({inpvalue}) {
-    const [ShortenUrl,setShorten]=useState("The Shortened Link will be displayed here");
-    const fetchData=async()=>{
-        try {
-            const res= await axios(`https://api.shrtco.de/v2/shorten?url=${inpvalue}`);
-            setShorten(res.data.result.full_short_link);
-        } catch (error) {
-          console.log(error);
-        }
-      
+  const fetchData = async () => {
+    try {
+      const res = await axios.post('http://localhost:5000/api/shorten', {
+        originalUrl: inpvalue,
+      });
+
+      setShorten(res.data.shortUrl);
+    } catch (error) {
+      console.log(error);
     }
-useEffect(()=>{
-  if(inpvalue.length){
-    fetchData();
-  }
+  };
 
-},[inpvalue]);
+  useEffect(() => {
+    if (inpvalue.length) {
+      fetchData();
+    }
+  }, [inpvalue]);
 
   return (
     <>
-    {
-      ShortenUrl && (<div className='Gen'>
-      <p>{ShortenUrl}</p>
-  </div>)
-    }
+      {shortenUrl && (
+        <div className='Gen'>
+          <p>{shortenUrl}</p>
+        </div>
+      )}
     </>
-  )
+  );
 }
 
-export default GenerateResut
+export default GenerateResult;
